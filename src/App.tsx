@@ -25,7 +25,6 @@ function LinkGroup({ heading, items }: { heading: string; items: Platform[] }) {
 export default function App() {
   const today = useMemo(() => new Date(), []);
   const version = versions[getVersionIndex(versions.length, album.rotationAnchor, today)];
-  const weekday = today.toLocaleDateString(undefined, { weekday: "long" });
 
   const playerTracks = tracks.map((t) => ({
     title: t.title,
@@ -48,8 +47,8 @@ export default function App() {
         </header>
 
         <section className="card">
-          <h2 className="section-title">Today's version ({weekday})</h2>
-          <p className="version-name">{version.title}</p>
+          <h2 className="section-title">{version.title}</h2>
+          <p className="version-name">Fully Automated Luxury Music</p>
           {version.description && <p className="version-description">{version.description}</p>}
           <Player key={version.id} tracks={playerTracks} />
         </section>
