@@ -1,0 +1,52 @@
+@import url("https://fonts.cdnfonts.com/css/neue-haas-grotesk-display-pro?styles=82961,82962,82971,82972,82969,82970,82967,82968,82965,82966,82963,82964,82959,82960,82957,82958");
+
+:root {
+  color-scheme: dark;
+
+  --font-body: "Neue Haas Grotesk Display Pro", sans-serif;
+  --font-display: "Neue Haas Grotesk Display Pro", sans-serif;
+
+  --color-bg: #232323;
+  --color-bg-glow: #353535;
+  --color-surface: #262626;
+  --color-surface-hover: #2c3347;
+  --color-border: #495662;
+  --color-text-muted: #f2ede2;
+  --color-text: #efc956;
+  --color-accent: #7ca48f;
+  --color-accent-contrast: #14202a;
+  --color-error: #ea5d4d;
+
+  /* Waveform (read by JS when the player is created; reload after editing) */
+  --color-wave: #4a536d;
+  --color-wave-progress: var(--color-accent);
+  --color-wave-cursor: var(--color-accent);
+  --wave-height: 88px;
+  --wave-bar-width: 2px;
+  --wave-bar-gap: 2px;
+  --wave-bar-radius: 2px;
+
+  /* Type scale */
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 2.25rem;
+  --line-height: 1.55;
+  --line-height-tight: 1.15;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2.5rem;
+
+  /* Shape and layout */
+  --radius-md: 10px;
+  --radius-lg: 20px;
+  --radius-full: 999px;
+  --layout-max-width: 560px;
+  --control-size: 56px;
+  --transition: 160ms ease;
+}

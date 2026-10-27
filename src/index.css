@@ -1,0 +1,27 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  background-image: radial-gradient(ellipse at top, var(--color-bg-glow), transparent 65%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+h1, h2, h3, p { margin: 0; }
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
