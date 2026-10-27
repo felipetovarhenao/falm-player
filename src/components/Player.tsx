@@ -13,7 +13,7 @@ const formatTime = (s: number) =>
     .toString()
     .padStart(2, "0")}`;
 
-export default function Player({ tracks }: { tracks: PlayerTrack[] }) {
+export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[]; setTrackTitle: React.Dispatch<React.SetStateAction<string>> }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WaveSurfer | null>(null);
   const indexRef = useRef(0);
@@ -87,8 +87,9 @@ export default function Player({ tracks }: { tracks: PlayerTrack[] }) {
     setLoadPercent(0);
     setCurrentTime(0);
     setError(null);
-    wsRef.current?.load(src).catch(() => {}); // failures are reported through the 'error' event
-  }, [src]);
+    wsRef.current?.load(src).catch(() => {});
+    setTrackTitle(`${tracks[index].title}`);
+  }, [src, index]);
 
   return (
     <div className="player">

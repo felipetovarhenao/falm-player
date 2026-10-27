@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { album, versions, tracks, platforms, type Platform } from "./config/album";
 import { getVersionIndex } from "./lib/schedule";
 import Player from "./components/Player";
@@ -25,6 +25,7 @@ function LinkGroup({ heading, items }: { heading: string; items: Platform[] }) {
 export default function App() {
   const today = useMemo(() => new Date(), []);
   const version = versions[getVersionIndex(versions.length, album.rotationAnchor, today)];
+  const [trackTitle, setTrackTitle] = useState("");
 
   const playerTracks = tracks.map((t) => ({
     title: t.title,
@@ -48,9 +49,9 @@ export default function App() {
 
         <section className="card">
           <h2 className="section-title">{version.title}</h2>
-          <p className="version-name">Fully Automated Luxury Music</p>
+          <p className="version-name">{trackTitle}</p>
           {version.description && <p className="version-description">{version.description}</p>}
-          <Player key={version.id} tracks={playerTracks} />
+          <Player key={version.id} tracks={playerTracks} setTrackTitle={setTrackTitle} />
         </section>
 
         <section className="card">
