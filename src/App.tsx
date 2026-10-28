@@ -36,7 +36,15 @@ export default function App() {
   return (
     <main className="app">
       <div className="container">
-        <div className="artwork">{album.artworkUrl ? <img src={album.artworkUrl} alt={`${album.title} artwork`} /> : <span>Album artwork</span>}</div>
+        <div className="artwork">
+          {album.artworkUrl ? (
+            <a target="_blank" referrerPolicy="no-referrer" href="https://deadlandrecords.bandcamp.com/album/fully-automated-luxury-music">
+              <img src={album.artworkUrl} alt={`${album.title} artwork`} />
+            </a>
+          ) : (
+            <span>Album artwork</span>
+          )}
+        </div>
 
         <header>
           <h1 className="title">{album.title}</h1>
@@ -52,7 +60,9 @@ export default function App() {
 
         {seed && (
           <section className="card player-card">
-            <h2 className="section-title">Seed {`${seed}`}</h2>
+            <h2 className="section-title">
+              Generative seed: <b>{`${seed}`}</b>
+            </h2>
             <p className="version-name">{trackTitle}</p>
             <Player key={`${seed}`} tracks={playerTracks} setTrackTitle={setTrackTitle} />
           </section>
