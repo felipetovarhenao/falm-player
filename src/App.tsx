@@ -69,8 +69,8 @@ export default function App() {
         )}
 
         <section className="card">
-          <LinkGroup heading="Purchase album" items={platforms.filter((p) => p.kind === "buy")} />
-          <LinkGroup heading="Stream album" items={platforms.filter((p) => p.kind === "stream")} />
+          <LinkGroup heading="Purchase the album" items={platforms.filter((p) => p.kind === "buy")} />
+          <LinkGroup heading="Listen to the album" items={platforms.filter((p) => p.kind === "stream")} />
         </section>
       </div>
     </main>
