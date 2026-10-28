@@ -1,3 +1,3 @@
-# Fully Automated Luxury Music: Web Player
+# _Fully Automated Luxury Music_ Web Player
 
-A web player for pre-rendered variants of **Fully Automated Luxury Music**.
+A web player for _Fully Automated Luxury Music_, available at [https://fullyautomatedluxurymusic.com](https://fullyautomatedluxurymusic.com)
