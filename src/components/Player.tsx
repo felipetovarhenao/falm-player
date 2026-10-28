@@ -133,7 +133,7 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
               aria-current={i === index}
               onClick={() => (i === index ? wsRef.current?.playPause() : goTo(i))}
             >
-              <span className="track-number">{i + 1}</span>
+              <span className="track-number">{`${i + 1}`.padStart(2, "0")}</span>
               <span>{t.title}</span>
             </button>
           </li>
