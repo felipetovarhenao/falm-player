@@ -42,9 +42,10 @@ export default function App() {
           <h1 className="title">{album.title}</h1>
           <p className="artist">{album.artist}</p>
           <p className="description">{album.description}</p>
+          <p className="description">To listen to a different variant of the album, refresh this website.</p>
           {album.repoUrl && (
             <a className="repo-link" href={album.repoUrl} target="_blank" rel="noreferrer">
-              View the source repository
+              Github repository
             </a>
           )}
         </header>
