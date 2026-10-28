@@ -6,6 +6,9 @@ export interface PlayerTrack {
   src: string;
 }
 
+const STORAGE_KEY = "player-state";
+const SEEK_MARGIN = 1;
+
 const cssVar = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 const formatTime = (s: number) =>
@@ -13,14 +16,34 @@ const formatTime = (s: number) =>
     .toString()
     .padStart(2, "0")}`;
 
+const loadState = (trackCount: number): { index: number; time: number } | null => {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
+    if (Number.isInteger(s?.index) && s.index >= 0 && s.index < trackCount && Number.isFinite(s.time) && s.time >= 0) return s;
+  } catch {}
+  return null;
+};
+
+const saveState = (index: number, time: number) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ index, time }));
+  } catch {}
+};
+
 export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[]; setTrackTitle: React.Dispatch<React.SetStateAction<string>> }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WaveSurfer | null>(null);
-  const indexRef = useRef(0);
-  const shouldPlayRef = useRef(false); // true: start playing as soon as the next track is ready
+
+  const shouldPlayRef = useRef(false);
   const goToRef = useRef<(i: number) => void>(() => {});
 
-  const [index, setIndex] = useState(0);
+  const [saved] = useState(() => loadState(tracks.length));
+  const indexRef = useRef(saved?.index ?? 0);
+  const pendingSeekRef = useRef<number | null>(saved?.time ?? null);
+  const timeRef = useRef(saved?.time ?? 0);
+  const lastSaveRef = useRef(0);
+
+  const [index, setIndex] = useState(saved?.index ?? 0);
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [loadPercent, setLoadPercent] = useState(0);
@@ -31,6 +54,8 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
   const goTo = (i: number) => {
     if (i < 0 || i >= tracks.length || i === indexRef.current) return;
     shouldPlayRef.current = true;
+    pendingSeekRef.current = null;
+    timeRef.current = 0;
     indexRef.current = i;
     setIndex(i);
   };
@@ -43,8 +68,8 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
     const ws = WaveSurfer.create({
       container: containerRef.current,
       height: parseInt(cssVar("--wave-height"), 10),
-      waveColor: cssVar("--color-wave"),
-      progressColor: cssVar("--color-wave-progress"),
+      waveColor: cssVar("--color-white"),
+      progressColor: cssVar("--color-green"),
       cursorColor: cssVar("--color-wave-cursor"),
       barWidth: parseInt(cssVar("--wave-bar-width"), 10),
       barGap: parseInt(cssVar("--wave-bar-gap"), 10),
@@ -60,13 +85,46 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
         ws.play();
       }
     });
-    ws.on("timeupdate", (t) => setCurrentTime(t));
     ws.on("play", () => setIsPlaying(true));
-    ws.on("pause", () => setIsPlaying(false));
+    ws.on("ready", (d) => {
+      setDuration(d);
+      setIsReady(true);
+
+      const t = pendingSeekRef.current;
+      pendingSeekRef.current = null;
+      if (t !== null && t > 0 && t < d - SEEK_MARGIN) {
+        ws.setTime(t);
+        setCurrentTime(t);
+      } else {
+        timeRef.current = 0;
+      }
+
+      if (shouldPlayRef.current) {
+        shouldPlayRef.current = false;
+        ws.play();
+      }
+    });
+
+    ws.on("timeupdate", (t) => {
+      setCurrentTime(t);
+      if (pendingSeekRef.current !== null) return;
+      timeRef.current = t;
+      if (Date.now() - lastSaveRef.current > 5000) {
+        lastSaveRef.current = Date.now();
+        saveState(indexRef.current, t);
+      }
+    });
+
+    ws.on("pause", () => {
+      setIsPlaying(false);
+      saveState(indexRef.current, timeRef.current);
+    });
+
     ws.on("finish", () => {
       setIsPlaying(false);
       goToRef.current(indexRef.current + 1);
     });
+
     ws.on("error", (err) => {
       shouldPlayRef.current = false;
 
@@ -74,8 +132,11 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
     });
 
     wsRef.current = ws;
+    const flush = () => saveState(indexRef.current, timeRef.current);
+    window.addEventListener("pagehide", flush);
     return () => {
       disposed = true;
+      window.removeEventListener("pagehide", flush);
       ws.destroy();
       wsRef.current = null;
     };
@@ -87,6 +148,7 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
     setLoadPercent(0);
     setCurrentTime(0);
     setError(null);
+    saveState(indexRef.current, timeRef.current);
     wsRef.current?.load(src).catch(() => {});
     setTrackTitle(`${tracks[index].title}`);
   }, [src, index]);
