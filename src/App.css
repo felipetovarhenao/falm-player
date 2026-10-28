@@ -1,16 +1,41 @@
 .app {
   min-height: 100dvh;
+  margin: 1rem;
   display: flex;
   justify-content: center;
   padding: var(--spa) var(--space-4);
 }
 
 .container {
-  width: 100%;
-  max-width: var(--layout-max-width);
-  display: flex;
-  flex-direction: column;
   gap: var(--space-5);
+}
+
+header {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 900px) {
+  .container {
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, auto) 1fr;
+    column-gap: var(--space-5);
+    align-items: start;
+  }
+
+  .container > .artwork,
+  .container > header,
+  .container > .card:not(.player-card) {
+    grid-column: 2;
+  }
+
+  .container > .player-card {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    margin-top: 2rem;
+  }
 }
 
 .artwork {

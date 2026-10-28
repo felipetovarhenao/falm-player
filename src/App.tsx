@@ -51,7 +51,7 @@ export default function App() {
         </header>
 
         {seed && (
-          <section className="card">
+          <section className="card player-card">
             <h2 className="section-title">Seed {`${seed}`}</h2>
             <p className="version-name">{trackTitle}</p>
             <Player key={`${seed}`} tracks={playerTracks} setTrackTitle={setTrackTitle} />
@@ -59,8 +59,8 @@ export default function App() {
         )}
 
         <section className="card">
-          <LinkGroup heading="Buy the mastered album" items={platforms.filter((p) => p.kind === "buy")} />
-          <LinkGroup heading="Stream the mastered album" items={platforms.filter((p) => p.kind === "stream")} />
+          <LinkGroup heading="Purchase album" items={platforms.filter((p) => p.kind === "buy")} />
+          <LinkGroup heading="Stream album" items={platforms.filter((p) => p.kind === "stream")} />
         </section>
       </div>
     </main>
