@@ -6,19 +6,25 @@
   --font-body: "Neue Haas Grotesk Display Pro", sans-serif;
   --font-display: "Neue Haas Grotesk Display Pro", sans-serif;
 
+  --color-red: #ea5d4d;
+  --color-yellow: #efc956;
+  --color-blue: #5f8fbf;
+  --color-green: #7ca490;
+  --color-white: #f2ede2;
+
   --color-bg: #232323;
   --color-bg-glow: #353535;
   --color-surface: #262626;
   --color-surface-hover: #2c3347;
   --color-border: #495662;
-  --color-text-muted: #f2ede2;
-  --color-text: #efc956;
-  --color-accent: #5f8fbf;
+  --color-text-muted: var(--color-white);
+  --color-text: var(--color-yellow);
+  --color-accent: var(--color-blue);
   --color-accent-contrast: #14202a;
-  --color-error: #ea5d4d;
+  --color-error: var(--color-red);
 
   /* Waveform (read by JS when the player is created; reload after editing) */
-  --color-wave: #7ca48f;
+  --color-wave: var(--color-green);
   --color-wave-progress: var(--color-accent);
   --color-wave-cursor: var(--color-accent);
   --wave-height: 88px;

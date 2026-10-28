@@ -202,6 +202,7 @@
   background: none;
   text-align: left;
   cursor: pointer;
+  color: var(--color-white);
   transition:
     background var(--transition),
     color var(--transition);
@@ -210,12 +211,24 @@
   background: var(--color-surface-hover);
 }
 .track.is-active {
-  color: var(--color-accent);
+  color: var(--color-yellow);
 }
 .track-number {
   width: 1.5rem;
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
+  &.c1 {
+    color: var(--color-red);
+  }
+  &.c2 {
+    color: var(--color-yellow);
+  }
+  &.c3 {
+    color: var(--color-blue);
+  }
+  &.c4 {
+    color: var(--color-green);
+  }
 }
 .track.is-active .track-number {
   color: inherit;
