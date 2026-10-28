@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
-import { album, versions, tracks, platforms, type Platform } from "./config/album";
-import { getVersionIndex } from "./lib/schedule";
+import { useEffect, useState } from "react";
+import { album, seeds, tracks, platforms, type Platform } from "./config/album";
 import Player from "./components/Player";
 import "./App.css";
 
@@ -23,13 +22,16 @@ function LinkGroup({ heading, items }: { heading: string; items: Platform[] }) {
 }
 
 export default function App() {
-  const today = useMemo(() => new Date(), []);
-  const version = versions[getVersionIndex(versions.length, album.rotationAnchor, today)];
   const [trackTitle, setTrackTitle] = useState("");
+  const [seed, setSeed] = useState<Number | null>(null);
+
+  useEffect(() => {
+    setSeed(seeds[Math.round(Math.random() * (seeds.length - 1))]);
+  }, []);
 
   const playerTracks = tracks.map((t) => ({
     title: t.title,
-    src: `${album.audioBaseUrl}/${version.folder}/${t.file}`,
+    src: `${album.audioBaseUrl}/v${seed}/${t.file}`,
   }));
   return (
     <main className="app">
@@ -47,12 +49,13 @@ export default function App() {
           )}
         </header>
 
-        <section className="card">
-          <h2 className="section-title">{version.title}</h2>
-          <p className="version-name">{trackTitle}</p>
-          {version.description && <p className="version-description">{version.description}</p>}
-          <Player key={version.id} tracks={playerTracks} setTrackTitle={setTrackTitle} />
-        </section>
+        {seed && (
+          <section className="card">
+            <h2 className="section-title">Seed {`${seed}`}</h2>
+            <p className="version-name">{trackTitle}</p>
+            <Player key={`${seed}`} tracks={playerTracks} setTrackTitle={setTrackTitle} />
+          </section>
+        )}
 
         <section className="card">
           <LinkGroup heading="Buy the mastered album" items={platforms.filter((p) => p.kind === "buy")} />

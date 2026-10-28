@@ -26,13 +26,6 @@ export const platforms: Platform[] = [
   { label: "Spotify", url: "#", kind: "stream" },
 ];
 
-export interface AlbumVersion {
-  id: string;
-  title: string;
-  description?: string;
-  folder: string;
-}
-
 export interface Track {
   title: string;
   file: string;
@@ -51,16 +44,4 @@ export const tracks: Track[] = [
   { title: "postlude (to my mother)", file: "10.mp3" },
 ];
 
-export const versions: AlbumVersion[] = [
-  { id: "v1", title: "Seed 3501", folder: "v3501" },
-  { id: "v2", title: "Seed 4284", folder: "v4284" },
-  { id: "v3", title: "Seed 4292", folder: "v4292" },
-  { id: "v4", title: "Seed 6043", folder: "v6043" },
-  { id: "v5", title: "Seed 9521", folder: "v9521" },
-  { id: "v6", title: "Seed 13035", folder: "v13035" },
-  { id: "v7", title: "Seed 21089", folder: "v21089" },
-  { id: "v8", title: "Seed 6135", folder: "v6135" },
-  { id: "v9", title: "Seed 16685", folder: "v16685" },
-  { id: "v10", title: "Seed 22879", folder: "v22879" },
-  { id: "v11", title: "Seed 24655", folder: "v24655" },
-];
+export const seeds: Number[] = [3501, 4284, 4292, 6043, 9521, 13035, 21089, 6135, 16685, 22879, 24655];
