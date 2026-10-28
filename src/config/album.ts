@@ -19,11 +19,10 @@ export const album = {
   rotationAnchor: "2026-01-05",
 };
 
-// Add or remove entries freely. `kind` decides the group the link appears in.
 export const platforms: Platform[] = [
   { label: "Bandcamp", url: "https://deadlandrecords.bandcamp.com/album/fully-automated-luxury-music", kind: "buy" },
-  { label: "Apple Music", url: "#", kind: "stream" },
-  { label: "Spotify", url: "#", kind: "stream" },
+  // { label: "Apple Music", url: "#", kind: "stream" },
+  // { label: "Spotify", url: "#", kind: "stream" },
 ];
 
 export interface Track {
