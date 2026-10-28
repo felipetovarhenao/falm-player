@@ -13,12 +13,12 @@
   --color-border: #495662;
   --color-text-muted: #f2ede2;
   --color-text: #efc956;
-  --color-accent: #7ca48f;
+  --color-accent: #5f8fbf;
   --color-accent-contrast: #14202a;
   --color-error: #ea5d4d;
 
   /* Waveform (read by JS when the player is created; reload after editing) */
-  --color-wave: #4a536d;
+  --color-wave: #7ca48f;
   --color-wave-progress: var(--color-accent);
   --color-wave-cursor: var(--color-accent);
   --wave-height: 88px;
