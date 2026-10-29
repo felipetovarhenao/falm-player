@@ -21,8 +21,9 @@ export const album = {
 
 export const platforms: Platform[] = [
   { label: "Bandcamp", url: "https://deadlandrecords.bandcamp.com/album/fully-automated-luxury-music", kind: "buy" },
-  // { label: "Apple Music", url: "#", kind: "stream" },
-  // { label: "Spotify", url: "#", kind: "stream" },
+  { label: "Apple Music", url: "https://music.apple.com/us/album/fully-automated-luxury-music/6828299829", kind: "stream" },
+  { label: "Spotify", url: "https://open.spotify.com/album/2stjjnOdPn81TYQRfUgoaj", kind: "stream" },
+  { label: "YouTube Music", url: "https://music.youtube.com/playlist?list=OLAK5uy_l-ZWvcC_5wLQdvAhdC7KuZ31ym-FGbNYA", kind: "stream" },
 ];
 
 export interface Track {
