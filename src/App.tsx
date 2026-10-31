@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { album, seeds, tracks, platforms, type Platform } from "./config/album";
 import Player from "./components/Player";
 import "./App.css";
+import { ReloadIcon } from "./components/ReloadIcon";
 
 function LinkGroup({ heading, items }: { heading: string; items: Platform[] }) {
   if (items.length === 0) return null;
@@ -21,12 +22,16 @@ function LinkGroup({ heading, items }: { heading: string; items: Platform[] }) {
   );
 }
 
+function newSeed() {
+  return seeds[Math.round(Math.random() * (seeds.length - 1))];
+}
+
 export default function App() {
   const [trackTitle, setTrackTitle] = useState("");
   const [seed, setSeed] = useState<Number | null>(null);
 
   useEffect(() => {
-    setSeed(seeds[Math.round(Math.random() * (seeds.length - 1))]);
+    setSeed(newSeed());
   }, []);
 
   const playerTracks = tracks.map((t) => ({
@@ -60,9 +65,12 @@ export default function App() {
 
         {seed && (
           <section className="card player-card">
-            <h2 className="section-title">
-              Generative seed: <b>{`${seed}`}</b>
-            </h2>
+            <div className="seed-header">
+              <h2 className="section-title">
+                Generative seed: <b>{`${seed}`}</b>
+              </h2>
+              <ReloadIcon className="reload-btn" onClick={() => setSeed(newSeed())} />
+            </div>
             <p className="version-name">{trackTitle}</p>
             <Player key={`${seed}`} tracks={playerTracks} setTrackTitle={setTrackTitle} />
           </section>

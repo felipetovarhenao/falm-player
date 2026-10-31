@@ -263,3 +263,21 @@ header {
 .track.is-active .track-number {
   color: inherit;
 }
+.seed-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reload-btn {
+  color: var(--color-blue);
+  &,
+  &:hover {
+    transition-duration: 0.1s;
+  }
+  &:hover {
+    transform: scale(115%) rotate(10deg);
+    color: var(--color-yellow);
+  }
+}
