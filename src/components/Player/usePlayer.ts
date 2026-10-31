@@ -1,36 +1,14 @@
+// usePlayer.ts
 import { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
+import { loadState, saveState } from "./storage";
+import { cssVar } from "./utils";
+import type { PlayerTrack } from "./types";
 
-export interface PlayerTrack {
-  title: string;
-  src: string;
-}
-
-const STORAGE_KEY = "player-state";
 const SEEK_MARGIN = 1;
+const SAVE_INTERVAL_MS = 5000;
 
-const cssVar = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-
-const formatTime = (s: number) =>
-  `${Math.floor(s / 60)}:${Math.floor(s % 60)
-    .toString()
-    .padStart(2, "0")}`;
-
-const loadState = (trackCount: number): { index: number; time: number } | null => {
-  try {
-    const s = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
-    if (Number.isInteger(s?.index) && s.index >= 0 && s.index < trackCount && Number.isFinite(s.time) && s.time >= 0) return s;
-  } catch {}
-  return null;
-};
-
-const saveState = (index: number, time: number) => {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ index, time }));
-  } catch {}
-};
-
-export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[]; setTrackTitle: React.Dispatch<React.SetStateAction<string>> }) {
+export function usePlayer(tracks: PlayerTrack[]) {
   const containerRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WaveSurfer | null>(null);
 
@@ -61,6 +39,9 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
   };
   goToRef.current = goTo;
 
+  const togglePlay = () => wsRef.current?.playPause();
+
+  // WaveSurfer instance lifecycle (created once)
   useEffect(() => {
     if (!containerRef.current) return;
     let disposed = false;
@@ -77,15 +58,8 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
     });
 
     ws.on("loading", (percent) => setLoadPercent(percent));
-    ws.on("ready", (d) => {
-      setDuration(d);
-      setIsReady(true);
-      if (shouldPlayRef.current) {
-        shouldPlayRef.current = false;
-        ws.play();
-      }
-    });
     ws.on("play", () => setIsPlaying(true));
+
     ws.on("ready", (d) => {
       setDuration(d);
       setIsReady(true);
@@ -109,7 +83,7 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
       setCurrentTime(t);
       if (pendingSeekRef.current !== null) return;
       timeRef.current = t;
-      if (Date.now() - lastSaveRef.current > 5000) {
+      if (Date.now() - lastSaveRef.current > SAVE_INTERVAL_MS) {
         lastSaveRef.current = Date.now();
         saveState(indexRef.current, t);
       }
@@ -127,13 +101,13 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
 
     ws.on("error", (err) => {
       shouldPlayRef.current = false;
-
       if (!disposed && err.name !== "AbortError") setError(err.message);
     });
 
     wsRef.current = ws;
     const flush = () => saveState(indexRef.current, timeRef.current);
     window.addEventListener("pagehide", flush);
+
     return () => {
       disposed = true;
       window.removeEventListener("pagehide", flush);
@@ -150,57 +124,7 @@ export default function Player({ tracks, setTrackTitle }: { tracks: PlayerTrack[
     setError(null);
     saveState(indexRef.current, timeRef.current);
     wsRef.current?.load(src).catch(() => {});
-    setTrackTitle(`${tracks[index].title}`);
   }, [src, index]);
 
-  return (
-    <div className="player">
-      <div ref={containerRef} className="player-wave" />
-      <div className={`player-status${error ? " is-error" : ""}`} role="status">
-        {error ? `The audio could not be loaded: ${error}` : !isReady ? `Loading ${Math.round(loadPercent)}%` : ""}
-      </div>
-
-      <div className="player-controls">
-        <button className="icon-btn" onClick={() => goTo(index - 1)} disabled={index === 0} aria-label="Previous track">
-          <svg viewBox="0 0 24 24">
-            <path d="M6 5h2v14H6zM20 5v14L9 12z" />
-          </svg>
-        </button>
-        <button className="play-btn" onClick={() => wsRef.current?.playPause()} disabled={!isReady} aria-label={isPlaying ? "Pause" : "Play"}>
-          {isPlaying ? (
-            <svg viewBox="0 0 24 24">
-              <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
-            </svg>
-          ) : (
-            <svg viewBox="0 0 24 24">
-              <path d="M7 4l13 8-13 8z" />
-            </svg>
-          )}
-        </button>
-        <button className="icon-btn" onClick={() => goTo(index + 1)} disabled={index === tracks.length - 1} aria-label="Next track">
-          <svg viewBox="0 0 24 24">
-            <path d="M16 5h2v14h-2zM4 5l11 7L4 19z" />
-          </svg>
-        </button>
-        <span className="player-time">
-          {formatTime(currentTime)} / {formatTime(duration)}
-        </span>
-      </div>
-
-      <ol className="track-list">
-        {tracks.map((t, i) => (
-          <li key={t.src}>
-            <button
-              className={`track${i === index ? " is-active" : ""}`}
-              aria-current={i === index}
-              onClick={() => (i === index ? wsRef.current?.playPause() : goTo(i))}
-            >
-              <span className={`track-number c${((i + 1) % 4) + 1}`}>{`${i + 1}`.padStart(2, "0")}</span>
-              <span>{t.title}</span>
-            </button>
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
+  return { containerRef, index, isReady, isPlaying, loadPercent, currentTime, duration, error, goTo, togglePlay };
 }
