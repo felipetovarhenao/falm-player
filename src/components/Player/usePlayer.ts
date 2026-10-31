@@ -55,6 +55,7 @@ export function usePlayer(tracks: PlayerTrack[]) {
       barWidth: parseInt(cssVar("--wave-bar-width"), 10),
       barGap: parseInt(cssVar("--wave-bar-gap"), 10),
       barRadius: parseInt(cssVar("--wave-bar-radius"), 10),
+      fetchParams: { cache: "force-cache" },
     });
 
     ws.on("loading", (percent) => setLoadPercent(percent));
